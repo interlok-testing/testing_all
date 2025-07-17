@@ -62,7 +62,7 @@ jobs:
     - name: Run Gradle tests
       run: |
         ./gradlew functionalTest
-      continue-on-error: true
+      #continue-on-error: true
 
     - name: Upload test results
       if: always()
