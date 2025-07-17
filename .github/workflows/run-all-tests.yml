@@ -89,8 +89,8 @@ jobs:
         echo "Test Results Summary:" > summary.txt
         for dir in test-results-*; do
           project=${dir#test-results-}
-          if [ -f "$dir/html/TESTS-*.xml" ]; then
-            result=$(grep "failures=\"0\"" "$dir/html/TESTS-*.xml" > /dev/null && echo "PASSED" || echo "FAILED")
+          if [ -f "$dir/reports/html/TESTS-*.xml" ]; then
+            result=$(grep "failures=\"0\"" "$dir/reports/html/TESTS-*.xml" > /dev/null && echo "PASSED" || echo "FAILED")
           else
             result="NO RESULTS"
           fi
