@@ -16,10 +16,6 @@ on:
 env:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
-permissions:
-  contents: read
-  packages: read
-
 jobs:
   get-projects-list:
     runs-on: ubuntu-latest
@@ -46,7 +42,6 @@ jobs:
       with:
         repository: interlok-testing/${{ matrix.project }}
         ref: ${{ github.event.inputs.feature-branch }}
-        token: ${{ secrets.INTERLOKDEV_GITHUB_TOKEN }}  # Use the INTERLOKDEV_GITHUB_TOKEN
         fetch-depth: 1
 
     - name: Set up JDK 17
