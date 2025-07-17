@@ -1,8 +1,7 @@
 name: Run All Tests
 
 on:
-  workflow_dispatch:   # Simple manual trigger without inputs
-
+  workflow_dispatch:
 env:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
@@ -11,20 +10,32 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      projects-length: ${{ steps.set-matrix.outputs.length }}
     steps:
       - name: Set projects matrix
         id: set-matrix
         run: |
           PROJECTS='["testing_activemq","testing_amqp","testing_artemis","testing_azure","testing_csv","testing_ehcache","testing_excel","testing_exec","testing_expression","testing_failover","testing_filesystem","testing_flatfile","testing_flyway","testing_healthcheck","testing_http","testing_jclouds","testing_json","testing_jsr107_cache","testing_kafka","testing_mail","testing_mongodb","testing_mqtt","testing_nats","testing_pdf","testing_pgp","testing_restful","testing_rest_metrics","testing_solace","testing_solace_jmx","testing_sshtunnel","testing_stax","testing_swift","testing_triggered","testing_vcs_git","testing_webservice_cxf"]'
           echo "matrix={\"project\":$PROJECTS}" >> $GITHUB_OUTPUT
+          echo "length=$(echo $PROJECTS | jq '. | length')" >> $GITHUB_OUTPUT
+
+  set-max-parallel:
+    runs-on: ubuntu-latest
+    needs: get-projects-list
+    outputs:
+      max_parallel: ${{ steps.calc.outputs.max_parallel }}
+    steps:
+      - id: calc
+        run: |
+          echo "max_parallel=$((${{ needs.get-projects-list.outputs.projects-length }} / 2))" >> $GITHUB_OUTPUT
 
   run-tests:
-    needs: get-projects-list
+    needs: [get-projects-list, set-max-parallel]
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJson(needs.get-projects-list.outputs.matrix)}}
       fail-fast: false
-      max-parallel: 10
+      max-parallel: ${{ fromJson(needs.set-max-parallel.outputs.max_parallel) }}
     
     steps:
     - name: Debug Info
@@ -78,8 +89,8 @@ jobs:
         echo "Test Results Summary:" > summary.txt
         for dir in test-results-*; do
           project=${dir#test-results-}
-          if [ -f "$dir/test/TEST-*.xml" ]; then
-            result=$(grep "failures=\"0\"" "$dir/test/TEST-*.xml" > /dev/null && echo "PASSED" || echo "FAILED")
+          if [ -f "$dir/html/TESTS-*.xml" ]; then
+            result=$(grep "failures=\"0\"" "$dir/html/TESTS-*.xml" > /dev/null && echo "PASSED" || echo "FAILED")
           else
             result="NO RESULTS"
           fi
