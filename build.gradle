@@ -1,3 +1,4 @@
+import org.gradle.tooling.BuildLauncher
 import xyz.ronella.gradle.plugin.simple.git.task.*
 
 import java.util.concurrent.ExecutorService
@@ -11,131 +12,137 @@ plugins {
 // Define repositories configuration
 ext {
     testRepositories = [
-            'testing_activemq' : [
-                    repository: 'https://github.com/interlok-testing/testing_activemq.git',
+//            'testing_cassandra' : [
+//                    repository: 'https://github.com/interlok-testing/testing_cassandra.git',
+//                    branch: 'main'
+//            ],
+
+            'testing_edi_legacy' : [ // LICENSE
+                    repository: 'https://github.com/interlok-testing/testing_edi_legacy.git',
+                    licensed: true
+            ],
+            'testing_edi_stream' : [ // LICENSE
+                    repository: 'https://github.com/interlok-testing/testing_edi_stream.git',
+                    licensed: true
             ],
 //            'testing_activemq_jmx' : [  // FAILED
 //                    repository: 'https://github.com/interlok-testing/testing_activemq_jmx.git',
 //            ],
-            'testing_amqp' : [
-                    repository: 'https://github.com/interlok-testing/testing_amqp.git',
-            ],
-            'testing_amqp_jmx' : [
-                    repository: 'https://github.com/interlok-testing/testing_amqp_jmx.git',
-            ],
-            'testing_artemis' : [
-                    repository: 'https://github.com/interlok-testing/testing_artemis.git',
-            ],
-            'testing_azure' : [
-                    repository: 'https://github.com/interlok-testing/testing_azure.git',
-            ],
-//            'testing_cassandra' : [ // FAILED
-//                    repository: 'https://github.com/interlok-testing/testing_cassandra.git',
-//            ],
-            'testing_csv' : [
-                    repository: 'https://github.com/interlok-testing/testing_csv.git',
-            ],
 
-//            'testing_edi_legacy' : [ // LICENSE
-//                    repository: 'https://github.com/interlok-testing/testing_edi_legacy.git',
+//
+//            'testing_activemq' : [
+//                    repository: 'https://github.com/interlok-testing/testing_activemq.git',
 //            ],
-//            'testing_edi_stream' : [ // LICENSE
-//                    repository: 'https://github.com/interlok-testing/testing_edi_stream.git',
+//            'testing_amqp' : [
+//                    repository: 'https://github.com/interlok-testing/testing_amqp.git',
 //            ],
-            'testing_ehcache' : [
-                    repository: 'https://github.com/interlok-testing/testing_ehcache.git',
-            ],
-            'testing_excel' : [
-                    repository: 'https://github.com/interlok-testing/testing_excel.git',
-            ],
-            'testing_exec' : [
-                    repository: 'https://github.com/interlok-testing/testing_exec.git',
-            ],
-            'testing_expression' : [
-                    repository: 'https://github.com/interlok-testing/testing_expression.git',
-            ],
-            'testing_failover' : [
-                    repository: 'https://github.com/interlok-testing/testing_failover.git',
-            ],
-            'testing_filesystem' : [
-                    repository: 'https://github.com/interlok-testing/testing_filesystem.git',
-            ],
-            'testing_flatfile' : [
-                    repository: 'https://github.com/interlok-testing/testing_flatfile.git',
-            ],
-            'testing_flyway' : [
-                    repository: 'https://github.com/interlok-testing/testing_flyway.git',
-            ],
-            'testing_healthcheck' : [
-                    repository: 'https://github.com/interlok-testing/testing_healthcheck.git',
-            ],
-            'testing_http' : [
-                    repository: 'https://github.com/interlok-testing/testing_http.git',
-            ],
-            'testing_jclouds' : [
-                    repository: 'https://github.com/interlok-testing/testing_jclouds.git',
-            ],
-            'testing_json' : [
-                    repository: 'https://github.com/interlok-testing/testing_json.git',
-            ],
-            'testing_jsr107_cache' : [
-                    repository: 'https://github.com/interlok-testing/testing_jsr107_cache.git',
-            ],
-            'testing_kafka' : [
-                    repository: 'https://github.com/interlok-testing/testing_kafka.git',
-            ],
-//            'testing_kie' : [ // FAILED
+//            'testing_amqp_jmx' : [
+//                    repository: 'https://github.com/interlok-testing/testing_amqp_jmx.git',
+//            ],
+//            'testing_artemis' : [
+//                    repository: 'https://github.com/interlok-testing/testing_artemis.git',
+//            ],
+//            'testing_azure' : [
+//                    repository: 'https://github.com/interlok-testing/testing_azure.git',
+//            ],
+//            'testing_csv' : [
+//                    repository: 'https://github.com/interlok-testing/testing_csv.git',
+//            ],
+//
+//            'testing_ehcache' : [
+//                    repository: 'https://github.com/interlok-testing/testing_ehcache.git',
+//            ],
+//            'testing_excel' : [
+//                    repository: 'https://github.com/interlok-testing/testing_excel.git',
+//            ],
+//            'testing_exec' : [
+//                    repository: 'https://github.com/interlok-testing/testing_exec.git',
+//            ],
+//            'testing_expression' : [
+//                    repository: 'https://github.com/interlok-testing/testing_expression.git',
+//            ],
+//            'testing_failover' : [
+//                    repository: 'https://github.com/interlok-testing/testing_failover.git',
+//            ],
+//            'testing_filesystem' : [
+//                    repository: 'https://github.com/interlok-testing/testing_filesystem.git',
+//            ],
+//            'testing_flatfile' : [
+//                    repository: 'https://github.com/interlok-testing/testing_flatfile.git',
+//            ],
+//            'testing_flyway' : [
+//                    repository: 'https://github.com/interlok-testing/testing_flyway.git',
+//            ],
+//            'testing_healthcheck' : [
+//                    repository: 'https://github.com/interlok-testing/testing_healthcheck.git',
+//            ],
+//            'testing_http' : [
+//                    repository: 'https://github.com/interlok-testing/testing_http.git',
+//            ],
+//            'testing_jclouds' : [
+//                    repository: 'https://github.com/interlok-testing/testing_jclouds.git',
+//            ],
+//            'testing_json' : [
+//                    repository: 'https://github.com/interlok-testing/testing_json.git',
+//            ],
+//            'testing_jsr107_cache' : [
+//                    repository: 'https://github.com/interlok-testing/testing_jsr107_cache.git',
+//            ],
+//            'testing_kafka' : [
+//                    repository: 'https://github.com/interlok-testing/testing_kafka.git',
+//            ],
+//            'testing_kie' : [
 //                    repository: 'https://github.com/interlok-testing/testing_kie.git',
 //            ],
-            'testing_mail' : [
-                    repository: 'https://github.com/interlok-testing/testing_mail.git',
-            ],
-            'testing_mongodb' : [
-                    repository: 'https://github.com/interlok-testing/testing_mongodb.git',
-            ],
-            'testing_mqtt' : [
-                    repository: 'https://github.com/interlok-testing/testing_mqtt.git',
-                    branch: 'main'
-            ],
-            'testing_nats' : [
-                    repository: 'https://github.com/interlok-testing/testing_nats.git',
-            ],
-            'testing_pdf' : [
-                    repository: 'https://github.com/interlok-testing/testing_pdf.git',
-            ],
-            'testing_pgp' : [
-                    repository: 'https://github.com/interlok-testing/testing_pgp.git',
-            ],
-            'testing_restful' : [
-                    repository: 'https://github.com/interlok-testing/testing_restful.git',
-            ],
-            'testing_rest_metrics' : [
-                    repository: 'https://github.com/interlok-testing/testing_rest_metrics.git',
-            ],
-            'testing_solace' : [
-                    repository: 'https://github.com/interlok-testing/testing_solace.git',
-            ],
-            'testing_solace_jmx' : [
-                    repository: 'https://github.com/interlok-testing/testing_solace_jmx.git',
-            ],
-            'testing_sshtunnel' : [
-                    repository: 'https://github.com/interlok-testing/testing_sshtunnel.git',
-            ],
-            'testing_stax' : [
-                    repository: 'https://github.com/interlok-testing/testing_stax.git',
-            ],
-            'testing_swift' : [
-                    repository: 'https://github.com/interlok-testing/testing_swift.git',
-            ],
-            'testing_triggered' : [
-                    repository: 'https://github.com/interlok-testing/testing_triggered.git',
-            ],
-            'testing_vcs_git' : [
-                    repository: 'https://github.com/interlok-testing/testing_vcs_git.git',
-            ],
-            'testing_webservice_cxf' : [
-                    repository: 'https://github.com/interlok-testing/testing_webservice_cxf.git',
-            ]
+//            'testing_mail' : [
+//                    repository: 'https://github.com/interlok-testing/testing_mail.git',
+//            ],
+//            'testing_mongodb' : [
+//                    repository: 'https://github.com/interlok-testing/testing_mongodb.git',
+//            ],
+//            'testing_mqtt' : [
+//                    repository: 'https://github.com/interlok-testing/testing_mqtt.git',
+//                    branch: 'main'
+//            ],
+//            'testing_nats' : [
+//                    repository: 'https://github.com/interlok-testing/testing_nats.git',
+//            ],
+//            'testing_pdf' : [
+//                    repository: 'https://github.com/interlok-testing/testing_pdf.git',
+//            ],
+//            'testing_pgp' : [
+//                    repository: 'https://github.com/interlok-testing/testing_pgp.git',
+//            ],
+//            'testing_restful' : [
+//                    repository: 'https://github.com/interlok-testing/testing_restful.git',
+//            ],
+//            'testing_rest_metrics' : [
+//                    repository: 'https://github.com/interlok-testing/testing_rest_metrics.git',
+//            ],
+//            'testing_solace' : [
+//                    repository: 'https://github.com/interlok-testing/testing_solace.git',
+//            ],
+//            'testing_solace_jmx' : [
+//                    repository: 'https://github.com/interlok-testing/testing_solace_jmx.git',
+//            ],
+//            'testing_sshtunnel' : [
+//                    repository: 'https://github.com/interlok-testing/testing_sshtunnel.git',
+//            ],
+//            'testing_stax' : [
+//                    repository: 'https://github.com/interlok-testing/testing_stax.git',
+//            ],
+//            'testing_swift' : [
+//                    repository: 'https://github.com/interlok-testing/testing_swift.git',
+//            ],
+//            'testing_triggered' : [
+//                    repository: 'https://github.com/interlok-testing/testing_triggered.git',
+//            ],
+//            'testing_vcs_git' : [
+//                    repository: 'https://github.com/interlok-testing/testing_vcs_git.git',
+//            ],
+//            'testing_webservice_cxf' : [
+//                    repository: 'https://github.com/interlok-testing/testing_webservice_cxf.git',
+//            ]
             // Add more repositories as needed
     ]
 }
@@ -143,6 +150,11 @@ ext {
 // Create tasks for each repository
 testRepositories.each { repoName, repoConfig ->
     def repoDir = new File("/tmp/${repoName}")
+
+    tasks.register("cleanRepo-${repoName}", Delete) {
+        delete(repoDir)
+    }
+
     // Task to clone new repository
     tasks.register("cloneRepo-${repoName}", GitClone) {
         directory = repoDir
@@ -187,11 +199,14 @@ testRepositories.each { repoName, repoConfig ->
                         .forProjectDirectory(repoDir)
                         .connect()
 
-                connection.newBuild()
+                BuildLauncher launcher = connection.newBuild()
                         .forTasks("functionalTest")
                         .setStandardOutput(System.out)
                         .setStandardError(System.err)
-                        .run()
+                if (repoConfig.licensed && project.hasProperty('license')) {
+                    launcher = launcher.withArguments("-Plicense=${project.getProperty('license')}")
+                }
+                launcher.run()
                 println "Tests completed successfully for: ${repoName}"
             } catch (Exception e) {
                 println "Error running tests for ${repoName}: ${e.message}"
